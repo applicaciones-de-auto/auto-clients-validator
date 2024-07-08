@@ -8,7 +8,6 @@ package org.guanzon.auto.validator.clients;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.model.clients.Model_Client_Social_Media;
 
-
 /**
  *
  * @author Arsiela
