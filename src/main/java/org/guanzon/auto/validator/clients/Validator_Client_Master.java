@@ -7,8 +7,16 @@ package org.guanzon.auto.validator.clients;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
@@ -38,7 +46,7 @@ public class Validator_Client_Master implements ValidatorInterface {
         try {
             String lsCompnyNm = "";
             String lsClientID = "";
-            String lsSQL = poEntity.getSQL();
+            String lsSQL = "";
 
             if (poEntity.getClientID().isEmpty()){
                 psMessage = "Client ID is not set.";
@@ -94,13 +102,41 @@ public class Validator_Client_Master implements ValidatorInterface {
                     psMessage = "Civil Status is not set.";
                     return false;
                 }
+                
+                String lsBdate = "1900-01-01";
+                if (poEntity.getValue("dBirthDte") == null){
+                    psMessage = "Invalid Birthdate.";
+                    return false;
+                } 
+                
+                Date date = (Date) poEntity.getValue("dBirthDte");
+                System.out.println(date);
+                String formattedDate = "1900-01-01";
+                // Define the date format
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date dateOld = null;
+                try {
+                    // Parse the formatted date string into a Date object
+                    dateOld = sdf.parse(formattedDate);
 
+                    // Output the Date object
+                    System.out.println("Converted Date: " + date);
+
+                } catch (ParseException e) {
+                    System.err.println("Error parsing date: " + e.getMessage());
+                }
+                
+                
+                if(date == dateOld || String.valueOf(date).equals(String.valueOf(dateOld)) || String.valueOf(date).equals("Mon Jan 01 00:00:00 CST 1900")){
+                    psMessage = "Invalid Birthdate.";
+                    return false;
+                }
+                lsSQL = poEntity.getSQL();
                 lsSQL = MiscUtil.addCondition(lsSQL, "a.sFrstName = " + SQLUtil.toSQL(poEntity.getFirstName())) +
-                                                        " AND a.sLastName = " + SQLUtil.toSQL(poEntity.getLastName()) + 
-                                                        " AND a.sBirthPlc = " + SQLUtil.toSQL(poEntity.getBirthPlc()) + 
-                                                        " AND a.sClientID <> " + SQLUtil.toSQL(poEntity.getClientID()); 
-                                                        //" AND a.dBirthDte = " + SQLUtil.toSQL(formattedDate));
-                System.out.println(lsSQL);
+                                                        " AND a.sLastName = " + SQLUtil.toSQL(poEntity.getLastName()) +
+                                                        " AND a.dBirthDte = " + SQLUtil.toSQL(date) +
+                                                        " AND a.sClientID <> " + SQLUtil.toSQL(poEntity.getClientID()) ;
+                System.out.println("EXISTING CUSTOMER WITH SAME FIRST|LAST NAME AND BIRTHDATE CHECK: " + lsSQL);
                 ResultSet loRS = poGRider.executeQuery(lsSQL);
 
                 if (MiscUtil.RecordCount(loRS) > 0){
@@ -113,15 +149,18 @@ public class Validator_Client_Master implements ValidatorInterface {
                     return false;
                 }
             } else {
+                //Validated Company Name
                 if (poEntity.getCompnyNm().isEmpty()){
                     psMessage = "Company Name cannot be Empty.";
                     return false;
                 }
-
-                lsSQL = MiscUtil.addCondition(lsSQL, "a.sCompnyNm = " + SQLUtil.toSQL(poEntity.getCompnyNm()) +
+                
+                // REPLACE(CONCAT(IFNULL(a.sHouseNox,''), IFNULL(a.sAddressx,''),IFNULL(c.sBrgyName,''), IFNULL(b.sTownName,''), IFNULL(d.sProvName,'')), ' ', '') 
+                lsSQL = poEntity.getSQL();
+                lsSQL = MiscUtil.addCondition(lsSQL, "REPLACE(a.sCompnyNm, ' ','') = " + SQLUtil.toSQL(poEntity.getCompnyNm().replace(" ", "")) +
                                                         " AND a.sTaxIDNox = " + SQLUtil.toSQL(poEntity.getTaxIDNo()) + 
                                                         " AND a.sClientID <> " + SQLUtil.toSQL(poEntity.getClientID())); 
-
+                System.out.println("EXISTING COMPANY WITH SAME TIN ID CHECK: " + lsSQL);
                 ResultSet loRS = poGRider.executeQuery(lsSQL);
 
                 if (MiscUtil.RecordCount(loRS) > 0){
@@ -135,38 +174,46 @@ public class Validator_Client_Master implements ValidatorInterface {
                 }
             }
             
+            //Validate TIN ID
             lsCompnyNm= "";lsClientID = "";
+            lsSQL = poEntity.getSQL();
             if(poEntity.getTaxIDNo() != null){
-                lsSQL = MiscUtil.addCondition(lsSQL, "a.sTaxIDNox = " + SQLUtil.toSQL(poEntity.getTaxIDNo()) + 
-                                                        " AND a.sClientID <> " + SQLUtil.toSQL(poEntity.getClientID())); 
+                if(!poEntity.getTaxIDNo().isEmpty()){
+                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sTaxIDNox = " + SQLUtil.toSQL(poEntity.getTaxIDNo()) + 
+                                                            " AND a.sClientID <> " + SQLUtil.toSQL(poEntity.getClientID())); 
+                    System.out.println("EXISTING TIN ID CHECK: " + lsSQL);
+                    ResultSet loRS = poGRider.executeQuery(lsSQL);
 
-                ResultSet loRS = poGRider.executeQuery(lsSQL);
-
-                if (MiscUtil.RecordCount(loRS) > 0){
-                    while(loRS.next()){
-                            lsCompnyNm = loRS.getString("sCompnyNm");
-                            lsClientID = loRS.getString("sClientID");
+                    if (MiscUtil.RecordCount(loRS) > 0){
+                        while(loRS.next()){
+                                lsCompnyNm = loRS.getString("sCompnyNm");
+                                lsClientID = loRS.getString("sClientID");
+                        }
+                        psMessage = "Existing Customer TIN ID Record.\n\nClient ID: "+ lsClientID + "\nName: " + lsCompnyNm.toUpperCase() + ".";
+                        MiscUtil.close(loRS);        
+                        return false;
                     }
-                    psMessage = "Existing Customer TIN ID Record.\n\nClient ID: "+ lsClientID + "\nName: " + lsCompnyNm.toUpperCase() + ".";
-                    MiscUtil.close(loRS);        
-                    return false;
                 }
             }
             
+            //Validated LTO ID
             lsCompnyNm= "";lsClientID = "";
+            lsSQL = poEntity.getSQL();
             if(poEntity.getLTOID() != null){
-                lsSQL = MiscUtil.addCondition(lsSQL, "a.sLTOIDxxx = " + SQLUtil.toSQL(poEntity.getLTOID()) + 
-                                                        " AND a.sClientID <> " + SQLUtil.toSQL(poEntity.getClientID())); 
-
-                ResultSet loRS = poGRider.executeQuery(lsSQL);
-                if (MiscUtil.RecordCount(loRS) > 0){
-                        while(loRS.next()){
-                            lsCompnyNm = loRS.getString("sCompnyNm");
-                            lsClientID = loRS.getString("sClientID");
-                        }
-                        psMessage = "Existing Customer LTO ID Record.\n\nClient ID: "+ lsClientID + "\nName: " + lsCompnyNm.toUpperCase() + ".";
-                        MiscUtil.close(loRS);
-                        return false;
+                if(!poEntity.getLTOID().isEmpty()){
+                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sLTOIDxxx = " + SQLUtil.toSQL(poEntity.getLTOID()) + 
+                                                            " AND a.sClientID <> " + SQLUtil.toSQL(poEntity.getClientID())); 
+                    System.out.println("EXISTING LTO ID CHECK: " + lsSQL);
+                    ResultSet loRS = poGRider.executeQuery(lsSQL);
+                    if (MiscUtil.RecordCount(loRS) > 0){
+                            while(loRS.next()){
+                                lsCompnyNm = loRS.getString("sCompnyNm");
+                                lsClientID = loRS.getString("sClientID");
+                            }
+                            psMessage = "Existing Customer LTO ID Record.\n\nClient ID: "+ lsClientID + "\nName: " + lsCompnyNm.toUpperCase() + ".";
+                            MiscUtil.close(loRS);
+                            return false;
+                    }
                 }
             }
         
@@ -179,6 +226,12 @@ public class Validator_Client_Master implements ValidatorInterface {
     @Override
     public String getMessage() {
         return psMessage;
+    }
+    
+    private LocalDate strToDate(String val) {
+        DateTimeFormatter date_formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(val, date_formatter);
+        return localDate;
     }
     
 }
