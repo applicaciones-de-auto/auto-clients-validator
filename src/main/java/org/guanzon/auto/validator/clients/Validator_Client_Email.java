@@ -24,7 +24,7 @@ public class Validator_Client_Email implements ValidatorInterface {
     
     @Override
     public void setGRider(GRider foValue) {
-//        poGRider = foValue;
+        poGRider = foValue;
     }
 
     @Override
