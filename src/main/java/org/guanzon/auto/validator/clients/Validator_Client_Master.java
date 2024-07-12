@@ -155,6 +155,17 @@ public class Validator_Client_Master implements ValidatorInterface {
                     return false;
                 }
                 
+                
+                if(poEntity.getTaxIDNo() == null){
+                    psMessage = "TIN ID cannot be Empty.";
+                    return false;
+                } else {
+                    if(poEntity.getTaxIDNo().isEmpty()){
+                        psMessage = "TIN ID cannot be Empty.";
+                        return false;
+                    }
+                }
+                
                 // REPLACE(CONCAT(IFNULL(a.sHouseNox,''), IFNULL(a.sAddressx,''),IFNULL(c.sBrgyName,''), IFNULL(b.sTownName,''), IFNULL(d.sProvName,'')), ' ', '') 
                 lsSQL = poEntity.getSQL();
                 lsSQL = MiscUtil.addCondition(lsSQL, "REPLACE(a.sCompnyNm, ' ','') = " + SQLUtil.toSQL(poEntity.getCompnyNm().replace(" ", "")) +

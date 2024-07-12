@@ -35,47 +35,19 @@ public class Validator_Client_Mobile implements ValidatorInterface {
 
     @Override
     public boolean isEntryOkay() {
-        try {
-            if (poEntity.getMobileID().isEmpty()){
-                psMessage = "Mobile ID is not set.";
-                return false;
-            }
+        if (poEntity.getMobileID().isEmpty()){
+            psMessage = "Mobile ID is not set.";
+            return false;
+        }
 
-            if (poEntity.getClientID().isEmpty()){
-                psMessage = "Client ID is not set.";
-                return false;
-            }
+        if (poEntity.getClientID().isEmpty()){
+            psMessage = "Client ID is not set.";
+            return false;
+        }
 
-            if (poEntity.getMobileNo().isEmpty()){
-                psMessage = "Contact number is not set.";
-                return false;
-            }
-            String lsCompnyNm = "";
-            String lsClientID = "";
-            String lsSQL = "SELECT " +
-                            "  a.sClientID " +
-                            ", a.sCompnyNm " +
-                            ", b.sMobileID " +
-                            ", b.sMobileNo " +
-                            "FROM client_master a " +
-                            "LEFT JOIN client_mobile b ON b.sClientID = a.sClientID " ;
-            lsSQL = MiscUtil.addCondition(lsSQL, "b.sMobileNo = " + SQLUtil.toSQL(poEntity.getMobileNo())) +
-                                                    " AND b.sMobileID <> " + SQLUtil.toSQL(poEntity.getMobileID()) ;
-            
-            System.out.println("EXISTING CONTACT NUMBER CHECK: " + lsSQL);
-            ResultSet loRS = poGRider.executeQuery(lsSQL);
-            if (MiscUtil.RecordCount(loRS) > 0){
-                while(loRS.next()){
-                    lsCompnyNm = loRS.getString("sCompnyNm");
-                    lsClientID = loRS.getString("sClientID");
-                }
-                psMessage = "Existing Contact Number with Customer Record.\n\nClient ID: " + lsClientID + "\nName: " + lsCompnyNm.toUpperCase() ;
-                MiscUtil.close(loRS);
-                return false;
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Validator_Client_Mobile.class.getName()).log(Level.SEVERE, null, ex);
+        if (poEntity.getMobileNo().isEmpty()){
+            psMessage = "Contact number is not set.";
+            return false;
         }
         return true;
     }
