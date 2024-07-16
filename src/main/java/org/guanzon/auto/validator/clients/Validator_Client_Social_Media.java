@@ -35,19 +35,35 @@ public class Validator_Client_Social_Media implements ValidatorInterface {
 
     @Override
     public boolean isEntryOkay() {
-        if (poEntity.getSocialID().isEmpty()){
-            psMessage = "Social ID is not set.";
+        
+        if(poEntity.getSocialID() == null){
+            psMessage = "Social ID cannot be Empty.";
             return false;
+        } else {
+            if(poEntity.getSocialID().trim().isEmpty()){
+                psMessage = "Social ID cannot be Empty.";
+                return false;
+            }
         }
         
-        if (poEntity.getClientID().isEmpty()){
-            psMessage = "Client ID is not set.";
+        if(poEntity.getClientID() == null){
+            psMessage = "Client ID cannot be Empty.";
             return false;
+        } else {
+            if(poEntity.getClientID().trim().isEmpty()){
+                psMessage = "Client ID cannot be Empty.";
+                return false;
+            }
         }
         
-        if (poEntity.getAccount().isEmpty()){
-            psMessage = "Social account is not set.";
+        if(poEntity.getAccount() == null){
+            psMessage = "Social account cannot be Empty.";
             return false;
+        } else {
+            if(poEntity.getAccount().trim().isEmpty()){
+                psMessage = "Social account cannot be Empty.";
+                return false;
+            }
         }
         
         //VALIDATE : Client Social Media

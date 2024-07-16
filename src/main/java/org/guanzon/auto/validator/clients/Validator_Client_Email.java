@@ -35,18 +35,35 @@ public class Validator_Client_Email implements ValidatorInterface {
 
     @Override
     public boolean isEntryOkay() {
-        if (poEntity.getClientID().isEmpty()){
+        
+        if(poEntity.getClientID() == null) {
             psMessage = "Client ID is not set.";
             return false;
+        } else {
+            if (poEntity.getClientID().isEmpty()){
+                psMessage = "Client ID is not set.";
+                return false;
+            }
         }
         
-        if (poEntity.getEmailID().isEmpty()){
+        if(poEntity.getEmailID() == null) {
             psMessage = "Email ID is not set.";
             return false;
+        } else {
+            if (poEntity.getEmailID().trim().isEmpty()){
+                psMessage = "Email ID is not set.";
+                return false;
+            }
         }
-        if (poEntity.getEmailAdd().isEmpty()){
+        
+        if(poEntity.getEmailAdd() == null) {
             psMessage = "Email is not set.";
             return false;
+        } else {
+            if (poEntity.getEmailAdd().trim().isEmpty()){
+                psMessage = "Email is not set.";
+                return false;
+            }
         }
         
         //VALIDATE : Client Email

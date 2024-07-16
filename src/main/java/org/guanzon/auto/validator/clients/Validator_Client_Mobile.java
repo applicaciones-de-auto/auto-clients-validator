@@ -5,13 +5,7 @@
  */
 package org.guanzon.auto.validator.clients;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.appdriver.base.MiscUtil;
-import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.auto.model.clients.Model_Client_Mobile;
 
 /**
@@ -35,20 +29,37 @@ public class Validator_Client_Mobile implements ValidatorInterface {
 
     @Override
     public boolean isEntryOkay() {
-        if (poEntity.getMobileID().isEmpty()){
-            psMessage = "Mobile ID is not set.";
+        
+        if(poEntity.getMobileID() == null){
+            psMessage = "Mobile ID cannot be Empty.";
             return false;
+        } else {
+            if(poEntity.getMobileID().trim().isEmpty()){
+                psMessage = "Mobile ID cannot be Empty.";
+                return false;
+            }
         }
-
-        if (poEntity.getClientID().isEmpty()){
-            psMessage = "Client ID is not set.";
+        
+        if(poEntity.getClientID() == null){
+            psMessage = "Client ID cannot be Empty.";
             return false;
+        } else {
+            if(poEntity.getClientID().trim().isEmpty()){
+                psMessage = "Client ID cannot be Empty.";
+                return false;
+            }
         }
-
-        if (poEntity.getMobileNo().isEmpty()){
-            psMessage = "Contact number is not set.";
+        
+        if(poEntity.getMobileNo() == null){
+            psMessage = "Contact number cannot be Empty.";
             return false;
+        } else {
+            if(poEntity.getMobileNo().trim().isEmpty()){
+                psMessage = "Contact number cannot be Empty.";
+                return false;
+            }
         }
+        
         return true;
     }
 

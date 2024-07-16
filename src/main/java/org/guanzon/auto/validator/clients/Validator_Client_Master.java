@@ -48,61 +48,73 @@ public class Validator_Client_Master implements ValidatorInterface {
             String lsClientID = "";
             String lsSQL = "";
 
-            if (poEntity.getClientID().isEmpty()){
+            if(poEntity.getClientID() == null) {
                 psMessage = "Client ID is not set.";
                 return false;
+            } else {
+                if (poEntity.getClientID().isEmpty()){
+                    psMessage = "Client ID is not set.";
+                    return false;
+                }
             }
 
     //        validate first name and last name if client type is customer
     //        0 Client
     //        1 Company
     //        2 Institutional *EXCLUDED* 
-            if (poEntity.getClientTp() == null){
+            
+            if(poEntity.getClientTp() == null) {
                 psMessage = "Client type is not set.";
                 return false;
+            } else {
+                if (poEntity.getClientTp().trim().isEmpty()){
+                    psMessage = "Client type is not set.";
+                    return false;
+                }
             }
 
             if(poEntity.getClientTp().equals("0")){
-                if (poEntity.getLastName() == null){
+                
+                if(poEntity.getLastName() == null) {
                     psMessage = "Customer last name is not set.";
                     return false;
-                }
-
-                if (poEntity.getFirstName() == null){
-                    psMessage = "Customer first name is not set.";
-                    return false;
-                }
-
-                if (poEntity.getGender() == null){
-                    psMessage = "Gender is not set.";
-                    return false;
-                }
-
-                if (poEntity.getCvilStat() == null){
-                    psMessage = "Civil Status is not set.";
-                    return false;
-                }
-
-                if (poEntity.getLastName().isEmpty()){
-                    psMessage = "Customer last name is not set.";
-                    return false;
-                }
-
-                if (poEntity.getFirstName().isEmpty()){
-                    psMessage = "Customer first name is not set.";
-                    return false;
-                }
-
-                if (poEntity.getGender().isEmpty()){
-                    psMessage = "Gender is not set.";
-                    return false;
-                }
-
-                if (poEntity.getCvilStat().isEmpty()){
-                    psMessage = "Civil Status is not set.";
-                    return false;
+                } else {
+                    if (poEntity.getLastName().trim().isEmpty()){
+                        psMessage = "Customer last name is not set.";
+                        return false;
+                    }
                 }
                 
+                if(poEntity.getFirstName() == null) {
+                    psMessage = "Customer first name is not set.";
+                    return false;
+                } else {
+                    if (poEntity.getFirstName().trim().isEmpty()){
+                        psMessage = "Customer first name is not set.";
+                        return false;
+                    }
+                }
+                
+                if(poEntity.getGender() == null) {
+                    psMessage = "Gender is not set.";
+                    return false;
+                } else {
+                    if (poEntity.getGender().trim().isEmpty()){
+                        psMessage = "Gender is not set.";
+                        return false;
+                    }
+                }
+
+                if(poEntity.getCvilStat() == null) {
+                    psMessage = "Civil Status is not set.";
+                    return false;
+                } else {
+                    if (poEntity.getCvilStat().trim().isEmpty()){
+                        psMessage = "Civil Status is not set.";
+                        return false;
+                    }
+                }
+
                 String lsBdate = "1900-01-01";
                 if (poEntity.getValue("dBirthDte") == null){
                     psMessage = "Invalid Birthdate.";
@@ -130,7 +142,9 @@ public class Validator_Client_Master implements ValidatorInterface {
                 if(date == dateOld || String.valueOf(date).equals(String.valueOf(dateOld)) || String.valueOf(date).equals("Mon Jan 01 00:00:00 CST 1900")){
                     psMessage = "Invalid Birthdate.";
                     return false;
-                }
+                } 
+                
+                
                 lsSQL = poEntity.getSQL();
                 lsSQL = MiscUtil.addCondition(lsSQL, "a.sFrstName = " + SQLUtil.toSQL(poEntity.getFirstName())) +
                                                         " AND a.sLastName = " + SQLUtil.toSQL(poEntity.getLastName()) +
@@ -149,18 +163,22 @@ public class Validator_Client_Master implements ValidatorInterface {
                     return false;
                 }
             } else {
-                //Validated Company Name
-                if (poEntity.getCompnyNm().isEmpty()){
-                    psMessage = "Company Name cannot be Empty.";
+                //Validate Company Name
+                if(poEntity.getCompnyNm() == null) {
+                    psMessage = "Company Name is not set.";
                     return false;
+                } else {
+                    if (poEntity.getCompnyNm().trim().isEmpty()){
+                        psMessage = "Company Name is not set.";
+                        return false;
+                    }
                 }
-                
                 
                 if(poEntity.getTaxIDNo() == null){
                     psMessage = "TIN ID cannot be Empty.";
                     return false;
                 } else {
-                    if(poEntity.getTaxIDNo().isEmpty()){
+                    if(poEntity.getTaxIDNo().trim().isEmpty()){
                         psMessage = "TIN ID cannot be Empty.";
                         return false;
                     }
