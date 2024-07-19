@@ -257,10 +257,4 @@ public class Validator_Client_Master implements ValidatorInterface {
         return psMessage;
     }
     
-    private LocalDate strToDate(String val) {
-        DateTimeFormatter date_formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse(val, date_formatter);
-        return localDate;
-    }
-    
 }
