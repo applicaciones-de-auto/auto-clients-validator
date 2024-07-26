@@ -7,6 +7,9 @@ package org.guanzon.auto.validator.clients;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.guanzon.appdriver.base.GRider;
@@ -100,6 +103,34 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
             psMessage = "Year cannot be Empty.";
             return false;
         }
+        
+//        if(poEntity.getValue("dRegister") != null){
+//            // Assuming getvalue("dRegister") returns a Date object
+//            Date dateValue = (Date) poEntity.getValue("dRegister");
+//
+//            // Convert Date to LocalDate
+//            LocalDate localDate = dateValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//
+//            // Get the year
+//            int year = localDate.getYear();
+//            if(year != 1900){
+//                if(poEntity.getYearModl() > year){
+//                psMessage = "Invalid date registration.";
+//                return false;
+//                }
+//            }
+//        }
+        
+        
+        if(poEntity.getCSNo() == null && poEntity.getPlateNo()== null){
+            psMessage = "CS / Plate Number cannot be empty.";
+            return false;
+        } else {
+            if(poEntity.getCSNo().trim().isEmpty() && poEntity.getPlateNo().trim().isEmpty()){
+                psMessage = "CS / Plate Number cannot be empty.";
+                return false;
+            } 
+        }
 
         if(poEntity.getFrameNo() == null){
             psMessage = "Frame No cannot be Empty.";
@@ -119,16 +150,6 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
                 psMessage = "Invalid Engine Number.";
                 return false;
             }
-        }
-        
-        if(poEntity.getCSNo() == null && poEntity.getPlateNo()== null){
-            psMessage = "CS / Plate Number cannot be empty.";
-            return false;
-        } else {
-            if(poEntity.getCSNo().trim().isEmpty() && poEntity.getPlateNo().trim().isEmpty()){
-                psMessage = "CS / Plate Number cannot be empty.";
-                return false;
-            } 
         }
         
         if(poEntity.getSoldStat()== null){
@@ -160,50 +181,22 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
 //                return false;
 //            }
 //        }
+
         
+        if(poEntity.getFrameNo().trim().isEmpty() || poEntity.getFrameNo().replace(" ", "").length() < 6 ){
+            psMessage = "Invalid Frame Number.";
+            return false;
+        }        
+
         if(poEntity.getEngineNo().trim().isEmpty() || poEntity.getEngineNo().replace(" ", "").length() < 3 ){
             psMessage = "Invalid Engine Number.";
             return false;
         }
         
-        if(poEntity.getFrameNo().trim().isEmpty() || poEntity.getFrameNo().replace(" ", "").length() < 6 ){
-            psMessage = "Invalid Frame Number.";
-            return false;
-        }
-        
         try {
             int lnLength = 0;
-            String lsSQL =    "  SELECT "                          
-                            + "  sModelIDx "                       
-                            + ", nEntryNox "                       
-                            + ", sEngnPtrn "                       
-                            + ", nEngnLenx "                           
-                            + "FROM vehicle_model_engine_pattern ";
-
-            String lsEngNo = poEntity.getEngineNo().substring(0, 3);
-            lsSQL = MiscUtil.addCondition(lsSQL, " sModelIDx = " + SQLUtil.toSQL(poEntity.getModelID()) 
-                                                    + " AND sEngnPtrn LIKE " + SQLUtil.toSQL(lsEngNo) 
-                                                    );
-            System.out.println("ENGINE NO CHECK: " + lsSQL);
-            ResultSet loRS = poGRider.executeQuery(lsSQL);
-
-            if (MiscUtil.RecordCount(loRS) > 0){
-                    while(loRS.next()){
-                        lnLength = loRS.getInt("nEngnLenx");
-                    }
-
-                    MiscUtil.close(loRS);
-                    if(lnLength != poEntity.getEngineNo().length()) {
-                        psMessage = "Engine Number Length does not equal to Model Engine Pattern Length.";
-                        return false;
-                    }
-            } else {
-                psMessage = "Engine Number does not exist in Model Engine Pattern.";
-                return false;
-            }
-
             String lsFrameNo = poEntity.getFrameNo().substring(0, 3);
-            lsSQL =    "  SELECT "                        
+            String lsSQL =    "  SELECT "                        
                         + "  sMakeIDxx "                     
                         + ", nEntryNox "                     
                         + ", sFrmePtrn "                       
@@ -213,7 +206,7 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
                                                     + " AND sFrmePtrn = " + SQLUtil.toSQL(lsFrameNo) 
                                                     );
             System.out.println("MAKE FRAME CHECK: " + lsSQL);
-            loRS = poGRider.executeQuery(lsSQL);
+            ResultSet loRS = poGRider.executeQuery(lsSQL);
 
             if (MiscUtil.RecordCount(loRS) == 0){
                 psMessage = "Frame Number does not exist in Make Frame Pattern.";
@@ -250,6 +243,36 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
                 return false;
             }
             
+            lnLength = 0;
+            lsSQL =    "  SELECT "                          
+                            + "  sModelIDx "                       
+                            + ", nEntryNox "                       
+                            + ", sEngnPtrn "                       
+                            + ", nEngnLenx "                           
+                            + "FROM vehicle_model_engine_pattern ";
+
+            String lsEngNo = poEntity.getEngineNo().substring(0, 3);
+            lsSQL = MiscUtil.addCondition(lsSQL, " sModelIDx = " + SQLUtil.toSQL(poEntity.getModelID()) 
+                                                    + " AND sEngnPtrn LIKE " + SQLUtil.toSQL(lsEngNo) 
+                                                    );
+            System.out.println("ENGINE NO CHECK: " + lsSQL);
+            loRS = poGRider.executeQuery(lsSQL);
+
+            if (MiscUtil.RecordCount(loRS) > 0){
+                    while(loRS.next()){
+                        lnLength = loRS.getInt("nEngnLenx");
+                    }
+
+                    MiscUtil.close(loRS);
+                    if(lnLength != poEntity.getEngineNo().length()) {
+                        psMessage = "Engine Number Length does not equal to Model Engine Pattern Length.";
+                        return false;
+                    }
+            } else {
+                psMessage = "Engine Number does not exist in Model Engine Pattern.";
+                return false;
+            }
+
             String lsID = "";
             String lsDesc  = "";
             lsSQL =    "  SELECT "                 
@@ -279,6 +302,31 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
             lsDesc  = "";
             lsSQL =    "  SELECT "                 
                     + "  sSerialID "             
+                    + ", sFrameNox "           
+                    + " FROM vehicle_serial " ;  
+
+            lsSQL = MiscUtil.addCondition(lsSQL, " sFrameNox = " + SQLUtil.toSQL(poEntity.getEngineNo()) 
+                                                    + " AND sSerialID <> " + SQLUtil.toSQL(poEntity.getSerialID()) 
+                                                    );
+            System.out.println("EXISTING VEHICLE SERIAL FRAME NO CHECK: " + lsSQL);
+            loRS = poGRider.executeQuery(lsSQL);
+
+            if (MiscUtil.RecordCount(loRS) > 0){
+                    while(loRS.next()){
+                        lsID = loRS.getString("sSerialID");
+                        lsDesc = loRS.getString("sFrameNox");
+                    }
+                    
+                    MiscUtil.close(loRS);
+                    
+                    psMessage = "Existing Vehicle Serial Frame No Record.\n\nSerial ID: " + lsID + "\nFrame No: " + lsDesc.toUpperCase()   ;
+                    return false;
+            }
+            
+            lsID = "";
+            lsDesc  = "";
+            lsSQL =    "  SELECT "                 
+                    + "  sSerialID "             
                     + ", sEngineNo "           
                     + " FROM vehicle_serial " ;  
 
@@ -300,30 +348,7 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
                     return false;
             }
             
-            lsID = "";
-            lsDesc  = "";
-            lsSQL =    "  SELECT "                 
-                    + "  sSerialID "             
-                    + ", sFrameNox "           
-                    + " FROM vehicle_serial " ;  
-
-            lsSQL = MiscUtil.addCondition(lsSQL, " sFrameNox = " + SQLUtil.toSQL(poEntity.getEngineNo()) 
-                                                    + " AND sSerialID <> " + SQLUtil.toSQL(poEntity.getSerialID()) 
-                                                    );
-            System.out.println("EXISTING VEHICLE SERIAL FRAME NO CHECK: " + lsSQL);
-            loRS = poGRider.executeQuery(lsSQL);
-
-            if (MiscUtil.RecordCount(loRS) > 0){
-                    while(loRS.next()){
-                        lsID = loRS.getString("sSerialID");
-                        lsDesc = loRS.getString("sFrameNox");
-                    }
-                    
-                    MiscUtil.close(loRS);
-                    
-                    psMessage = "Existing Vehicle Serial Frame No Record.\n\nSerial ID: " + lsID + "\nFrame No: " + lsDesc.toUpperCase()   ;
-                    return false;
-            }
+            
         } catch (SQLException ex) {
             Logger.getLogger(Validator_Vehicle_Serial.class.getName()).log(Level.SEVERE, null, ex);
         }
