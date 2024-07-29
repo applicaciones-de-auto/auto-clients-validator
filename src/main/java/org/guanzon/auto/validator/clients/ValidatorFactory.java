@@ -17,7 +17,9 @@ public class ValidatorFactory {
         Client_Mobile,
         Client_Email,
         Client_Social_Media,
-        Addresses
+        Addresses,
+        Vehicle_Serial,
+        Vehicle_Registration
     }
     
     public static ValidatorInterface make(ValidatorFactory.TYPE foType, Object foValue){
@@ -34,6 +36,10 @@ public class ValidatorFactory {
                 return new Validator_Client_Social_Media(foValue);
             case Addresses:
                 return new Validator_Addresses(foValue);
+            case Vehicle_Serial:
+                return new Validator_Vehicle_Serial(foValue);
+            case Vehicle_Registration:
+                return new Validator_Vehicle_Registration(foValue);
             default:
                 return null;
         }

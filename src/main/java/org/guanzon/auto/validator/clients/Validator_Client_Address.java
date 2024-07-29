@@ -28,17 +28,35 @@ public class Validator_Client_Address implements ValidatorInterface {
     }
     @Override
     public boolean isEntryOkay() {
-        if (poEntity.getClientID().isEmpty()){
+        
+        if(poEntity.getClientID() == null) {
             psMessage = "Client ID is not set.";
             return false;
+        } else {
+            if (poEntity.getClientID().isEmpty()){
+                psMessage = "Client ID is not set.";
+                return false;
+            }
         }
-        if (poEntity.getBrgyID().isEmpty()){
+        
+        if(poEntity.getBrgyID() == null) {
             psMessage = "Barangay is not set.";
             return false;
+        } else {
+            if (poEntity.getBrgyID().isEmpty()){
+                psMessage = "Barangay is not set.";
+                return false;
+            }
         }
-        if (poEntity.getTownID().isEmpty()){
+        
+        if(poEntity.getTownID() == null) {
             psMessage = "Town is not set.";
             return false;
+        } else {
+            if (poEntity.getTownID().isEmpty()){
+                psMessage = "Town is not set.";
+                return false;
+            }
         }
         
         return true;
