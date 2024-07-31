@@ -57,8 +57,8 @@ public class Validator_Sales_Executive implements ValidatorInterface {
 
             if (MiscUtil.RecordCount(loRS) > 0){
                 while(loRS.next()){
-                        lsCompnyNm = loRS.getString("sCompnyNm");
-                        lsClientID = loRS.getString("sClientID");
+                    lsCompnyNm = loRS.getString("sCompnyNm");
+                    lsClientID = loRS.getString("sClientID");
                 }
                 psMessage = "Existing Sales Executive Record.\n\nEmployee ID: " + lsClientID + "\nName: " + lsCompnyNm.toUpperCase() ;
                 MiscUtil.close(loRS);        
