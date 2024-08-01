@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.model.clients.Model_Sales_Agent;
 
 /**
@@ -59,20 +60,22 @@ public class Validator_Sales_Agent implements ValidatorInterface {
                     return false;
                 }
             }
-                
-            lsSQL = poEntity.getSQL();
-            lsSQL = MiscUtil.addCondition(lsSQL," a.sClientID = " + SQLUtil.toSQL(poEntity.getClientID())) ;
-            System.out.println("EXISTING REFERRAL AGENT: " + lsSQL);
-            ResultSet loRS = poGRider.executeQuery(lsSQL);
+            
+            if(poEntity.getEditMode() == EditMode.ADDNEW){
+                lsSQL = poEntity.getSQL();
+                lsSQL = MiscUtil.addCondition(lsSQL," a.sClientID = " + SQLUtil.toSQL(poEntity.getClientID())) ;
+                System.out.println("EXISTING REFERRAL AGENT: " + lsSQL);
+                ResultSet loRS = poGRider.executeQuery(lsSQL);
 
-            if (MiscUtil.RecordCount(loRS) > 0){
-                while(loRS.next()){
-                    lsCompnyNm = loRS.getString("sCompnyNm");
-                    lsClientID = loRS.getString("sClientID");
+                if (MiscUtil.RecordCount(loRS) > 0){
+                    while(loRS.next()){
+                        lsCompnyNm = loRS.getString("sCompnyNm");
+                        lsClientID = loRS.getString("sClientID");
+                    }
+                    psMessage = "Existing Referral Agent Record.\n\nReferral ID: " + lsClientID + "\nName: " + lsCompnyNm.toUpperCase() ;
+                    MiscUtil.close(loRS);        
+                    return false;
                 }
-                psMessage = "Existing Referral Agent Record.\n\nReferral ID: " + lsClientID + "\nName: " + lsCompnyNm.toUpperCase() ;
-                MiscUtil.close(loRS);        
-                return false;
             }
             
         

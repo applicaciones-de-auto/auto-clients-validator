@@ -9,5 +9,6 @@ org\guanzon\auto\validator\clients\ValidatorInterface.class
 org\guanzon\auto\validator\clients\Validator_Client_Mobile.class
 org\guanzon\auto\validator\clients\Validator_Vehicle_Registration.class
 org\guanzon\auto\validator\clients\Validator_Addresses.class
+org\guanzon\auto\validator\clients\Validator_Sales_Agent.class
 org\guanzon\auto\validator\clients\Validator_Client_Master.class
 org\guanzon\auto\validator\clients\Validator_Client_Social_Media.class

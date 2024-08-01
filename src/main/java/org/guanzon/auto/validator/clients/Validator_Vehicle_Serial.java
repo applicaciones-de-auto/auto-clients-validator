@@ -213,6 +213,9 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
                 return false;
             }
             
+            //CHECK 4th and 5th character
+            
+            
             lnLength = 0;
             lsSQL =    "  SELECT "                        
                         + "  sModelIDx "                     
@@ -300,12 +303,38 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
             
             lsID = "";
             lsDesc  = "";
+            lsSQL =   " SELECT "                                                               
+                    + "   a.sSerialID "                                                         
+                    + " , b.sPlateNox "                                                          
+                    + " FROM vehicle_serial a "                                                
+                    + " LEFT JOIN vehicle_serial_registration b ON b.sSerialID = a.sSerialID " ;
+
+            lsSQL = MiscUtil.addCondition(lsSQL, " b.sPlateNox = " + SQLUtil.toSQL(poEntity.getPlateNo()) 
+                                                    + " AND a.sSerialID <> " + SQLUtil.toSQL(poEntity.getSerialID()) 
+                                                    );
+            System.out.println("EXISTING VEHICLE SERIAL PLATE NO CHECK: " + lsSQL);
+            loRS = poGRider.executeQuery(lsSQL);
+
+            if (MiscUtil.RecordCount(loRS) > 0){
+                    while(loRS.next()){
+                        lsID = loRS.getString("sSerialID");
+                        lsDesc = loRS.getString("sPlateNox");
+                    }
+                    
+                    MiscUtil.close(loRS);
+                    
+                    psMessage = "Existing Vehicle Serial Plate No Record.\n\nSerial ID: " + lsID + "\nPlate No: " + lsDesc.toUpperCase()   ;
+                    return false;
+            }
+            
+            lsID = "";
+            lsDesc  = "";
             lsSQL =    "  SELECT "                 
                     + "  sSerialID "             
                     + ", sFrameNox "           
                     + " FROM vehicle_serial " ;  
 
-            lsSQL = MiscUtil.addCondition(lsSQL, " sFrameNox = " + SQLUtil.toSQL(poEntity.getEngineNo()) 
+            lsSQL = MiscUtil.addCondition(lsSQL, " sFrameNox = " + SQLUtil.toSQL(poEntity.getFrameNo()) 
                                                     + " AND sSerialID <> " + SQLUtil.toSQL(poEntity.getSerialID()) 
                                                     );
             System.out.println("EXISTING VEHICLE SERIAL FRAME NO CHECK: " + lsSQL);
