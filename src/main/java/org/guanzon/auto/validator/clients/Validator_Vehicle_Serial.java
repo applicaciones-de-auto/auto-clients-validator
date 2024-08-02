@@ -181,101 +181,128 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
 //                return false;
 //            }
 //        }
-
-        
-        if(poEntity.getFrameNo().trim().isEmpty() || poEntity.getFrameNo().replace(" ", "").length() < 6 ){
-            psMessage = "Invalid Frame Number.";
-            return false;
-        }        
-
-        if(poEntity.getEngineNo().trim().isEmpty() || poEntity.getEngineNo().replace(" ", "").length() < 3 ){
-            psMessage = "Invalid Engine Number.";
-            return false;
-        }
         
         try {
-            int lnLength = 0;
-            String lsFrameNo = poEntity.getFrameNo().substring(0, 3);
-            String lsSQL =    "  SELECT "                        
-                        + "  sMakeIDxx "                     
-                        + ", nEntryNox "                     
-                        + ", sFrmePtrn "                       
-                        + "FROM vehicle_make_frame_pattern ";
-
-            lsSQL = MiscUtil.addCondition(lsSQL, " sMakeIDxx = " + SQLUtil.toSQL(poEntity.getMakeID()) 
-                                                    + " AND sFrmePtrn = " + SQLUtil.toSQL(lsFrameNo) 
+            /*CHECK IF MAKE IS A AFFILIATED MAKE: 
+             * Vehicle make is a affiliated make and found in xxxstandard_sets ; Engine and Frame must be validate
+             */
+            String lsSQL =   " SELECT "
+                           + "  sDescript "
+                           + " , sValuexxx "
+                           + " FROM xxxstandard_sets ";
+            lsSQL = MiscUtil.addCondition(lsSQL, " sDescript = 'affiliated_make' "
+                                                    + " AND sValuexxx = " + SQLUtil.toSQL(poEntity.getMakeDesc()) 
                                                     );
-            System.out.println("MAKE FRAME CHECK: " + lsSQL);
+            System.out.println("AFFILIATED MAKE CHECK: " + lsSQL);
             ResultSet loRS = poGRider.executeQuery(lsSQL);
 
-            if (MiscUtil.RecordCount(loRS) == 0){
-                psMessage = "Frame Number does not exist in Make Frame Pattern.";
-                return false;
-            }
-            
-            //CHECK 4th and 5th character
-            
-            
-            lnLength = 0;
-            lsSQL =    "  SELECT "                        
-                        + "  sModelIDx "                     
-                        + ", nEntryNox "                     
-                        + ", sFrmePtrn "                    
-                        + ", nFrmeLenx "                         
-                        + "FROM vehicle_model_frame_pattern ";
-
-            lsFrameNo = poEntity.getFrameNo().substring(3, 6);
-            lsSQL = MiscUtil.addCondition(lsSQL, " sModelIDx = " + SQLUtil.toSQL(poEntity.getModelID()) 
-                                                    + " AND sFrmePtrn = " + SQLUtil.toSQL(lsFrameNo) 
-                                                    );
-            System.out.println("MODEL FRAME CHECK: " + lsSQL);
-            loRS = poGRider.executeQuery(lsSQL);
-
             if (MiscUtil.RecordCount(loRS) > 0){
-                while(loRS.next()){
-                    lnLength = loRS.getInt("nFrmeLenx");
-                }
+                //Check body type do not validate engine and frame when body type is Motorcycle or Truck
+                lsSQL =   " SELECT "
+                        + "  sModelIDx "
+                        + " , sBodyType "
+                        + " FROM vehicle_model ";
+                lsSQL = MiscUtil.addCondition(lsSQL, " (sBodyType <> '4' AND sBodyType <> '5') "
+                                                        + " AND sModelIDx = " + SQLUtil.toSQL(poEntity.getModelID()) 
+                                                        );
+                System.out.println("BODY TYPE CHECK: " + lsSQL);
+                loRS = poGRider.executeQuery(lsSQL);
+                if (MiscUtil.RecordCount(loRS) > 0){
+                
+                    if(poEntity.getFrameNo().trim().isEmpty() || poEntity.getFrameNo().replace(" ", "").length() < 6 ){
+                        psMessage = "Invalid Frame Number.";
+                        return false;
+                    }        
 
-                MiscUtil.close(loRS);
-                if(lnLength != poEntity.getFrameNo().length()) {
-                    psMessage = "Frame Number Length does not equal to Model Frame Pattern Length.";
-                    return false;
-                }
-            } else {
-                psMessage = "Frame Number does not exist in Model Frame Pattern.";
-                return false;
-            }
-            
-            lnLength = 0;
-            lsSQL =    "  SELECT "                          
-                            + "  sModelIDx "                       
-                            + ", nEntryNox "                       
-                            + ", sEngnPtrn "                       
-                            + ", nEngnLenx "                           
-                            + "FROM vehicle_model_engine_pattern ";
-
-            String lsEngNo = poEntity.getEngineNo().substring(0, 3);
-            lsSQL = MiscUtil.addCondition(lsSQL, " sModelIDx = " + SQLUtil.toSQL(poEntity.getModelID()) 
-                                                    + " AND sEngnPtrn LIKE " + SQLUtil.toSQL(lsEngNo) 
-                                                    );
-            System.out.println("ENGINE NO CHECK: " + lsSQL);
-            loRS = poGRider.executeQuery(lsSQL);
-
-            if (MiscUtil.RecordCount(loRS) > 0){
-                    while(loRS.next()){
-                        lnLength = loRS.getInt("nEngnLenx");
-                    }
-
-                    MiscUtil.close(loRS);
-                    if(lnLength != poEntity.getEngineNo().length()) {
-                        psMessage = "Engine Number Length does not equal to Model Engine Pattern Length.";
+                    if(poEntity.getEngineNo().trim().isEmpty() || poEntity.getEngineNo().replace(" ", "").length() < 3 ){
+                        psMessage = "Invalid Engine Number.";
                         return false;
                     }
-            } else {
-                psMessage = "Engine Number does not exist in Model Engine Pattern.";
-                return false;
-            }
 
+                    int lnLength = 0;
+                    String lsFrameNo = poEntity.getFrameNo().substring(0, 3);
+                    lsSQL =    "  SELECT "                        
+                                + "  sMakeIDxx "                     
+                                + ", nEntryNox "                     
+                                + ", sFrmePtrn "                       
+                                + "FROM vehicle_make_frame_pattern ";
+
+                    lsSQL = MiscUtil.addCondition(lsSQL, " sMakeIDxx = " + SQLUtil.toSQL(poEntity.getMakeID()) 
+                                                            + " AND sFrmePtrn = " + SQLUtil.toSQL(lsFrameNo) 
+                                                            );
+                    System.out.println("MAKE FRAME CHECK: " + lsSQL);
+                    loRS = poGRider.executeQuery(lsSQL);
+
+                    if (MiscUtil.RecordCount(loRS) == 0){
+                        psMessage = "Frame Number does not exist in Make Frame Pattern.";
+                        return false;
+                    }
+
+                    //CHECK 4th and 5th character
+
+
+                    lnLength = 0;
+                    lsSQL =    "  SELECT "                        
+                                + "  sModelIDx "                     
+                                + ", nEntryNox "                     
+                                + ", sFrmePtrn "                    
+                                + ", nFrmeLenx "                         
+                                + "FROM vehicle_model_frame_pattern ";
+
+                    lsFrameNo = poEntity.getFrameNo().substring(3, 6);
+                    lsSQL = MiscUtil.addCondition(lsSQL, " sModelIDx = " + SQLUtil.toSQL(poEntity.getModelID()) 
+                                                            + " AND sFrmePtrn = " + SQLUtil.toSQL(lsFrameNo) 
+                                                            );
+                    System.out.println("MODEL FRAME CHECK: " + lsSQL);
+                    loRS = poGRider.executeQuery(lsSQL);
+
+                    if (MiscUtil.RecordCount(loRS) > 0){
+                        while(loRS.next()){
+                            lnLength = loRS.getInt("nFrmeLenx");
+                        }
+
+                        MiscUtil.close(loRS);
+                        if(lnLength != poEntity.getFrameNo().length()) {
+                            psMessage = "Frame Number Length does not equal to Model Frame Pattern Length.";
+                            return false;
+                        }
+                    } else {
+                        psMessage = "Frame Number does not exist in Model Frame Pattern.";
+                        return false;
+                    }
+
+                    lnLength = 0;
+                    lsSQL =    "  SELECT "                          
+                                    + "  sModelIDx "                       
+                                    + ", nEntryNox "                       
+                                    + ", sEngnPtrn "                       
+                                    + ", nEngnLenx "                           
+                                    + "FROM vehicle_model_engine_pattern ";
+
+                    String lsEngNo = poEntity.getEngineNo().substring(0, 3);
+                    lsSQL = MiscUtil.addCondition(lsSQL, " sModelIDx = " + SQLUtil.toSQL(poEntity.getModelID()) 
+                                                            + " AND sEngnPtrn LIKE " + SQLUtil.toSQL(lsEngNo) 
+                                                            );
+                    System.out.println("ENGINE NO CHECK: " + lsSQL);
+                    loRS = poGRider.executeQuery(lsSQL);
+
+                    if (MiscUtil.RecordCount(loRS) > 0){
+                            while(loRS.next()){
+                                lnLength = loRS.getInt("nEngnLenx");
+                            }
+
+                            MiscUtil.close(loRS);
+                            if(lnLength != poEntity.getEngineNo().length()) {
+                                psMessage = "Engine Number Length does not equal to Model Engine Pattern Length.";
+                                return false;
+                            }
+                    } else {
+                        psMessage = "Engine Number does not exist in Model Engine Pattern.";
+                        return false;
+                    }
+                }
+            }
+            
             String lsID = "";
             String lsDesc  = "";
             lsSQL =    "  SELECT "                 
