@@ -76,21 +76,21 @@ public class Validator_Client_Master implements ValidatorInterface {
             if(poEntity.getClientTp().equals("0")){
                 
                 if(poEntity.getLastName() == null) {
-                    psMessage = "Customer last name is not set.";
+                    psMessage = "Last name is not set.";
                     return false;
                 } else {
                     if (poEntity.getLastName().trim().isEmpty()){
-                        psMessage = "Customer last name is not set.";
+                        psMessage = "Last name is not set.";
                         return false;
                     }
                 }
                 
                 if(poEntity.getFirstName() == null) {
-                    psMessage = "Customer first name is not set.";
+                    psMessage = "First name is not set.";
                     return false;
                 } else {
                     if (poEntity.getFirstName().trim().isEmpty()){
-                        psMessage = "Customer first name is not set.";
+                        psMessage = "First name is not set.";
                         return false;
                     }
                 }
@@ -158,7 +158,7 @@ public class Validator_Client_Master implements ValidatorInterface {
                             lsCompnyNm = loRS.getString("sCompnyNm");
                             lsClientID = loRS.getString("sClientID");
                     }
-                    psMessage = "Existing Customer Record.\n\nClient ID: " + lsClientID + "\nName: " + lsCompnyNm.toUpperCase() ;
+                    psMessage = "Existing Record.\n\nID: " + lsClientID + "\nName: " + lsCompnyNm.toUpperCase() ;
                     MiscUtil.close(loRS);        
                     return false;
                 }
@@ -197,7 +197,7 @@ public class Validator_Client_Master implements ValidatorInterface {
                             lsCompnyNm = loRS.getString("sCompnyNm");
                             lsClientID = loRS.getString("sClientID");
                     }
-                    psMessage = "Existing Customer Record.\n\nClient ID: " + lsClientID + "\nName: " + lsCompnyNm.toUpperCase();
+                    psMessage = "Existing Record.\n\nID: " + lsClientID + "\nName: " + lsCompnyNm.toUpperCase();
                     MiscUtil.close(loRS);        
                     return false;
                 }
@@ -218,7 +218,7 @@ public class Validator_Client_Master implements ValidatorInterface {
                                 lsCompnyNm = loRS.getString("sCompnyNm");
                                 lsClientID = loRS.getString("sClientID");
                         }
-                        psMessage = "Existing Customer TIN ID Record.\n\nClient ID: "+ lsClientID + "\nName: " + lsCompnyNm.toUpperCase() + ".";
+                        psMessage = "Existing TIN ID Record.\n\nID: "+ lsClientID + "\nName: " + lsCompnyNm.toUpperCase() + ".";
                         MiscUtil.close(loRS);        
                         return false;
                     }
@@ -239,7 +239,7 @@ public class Validator_Client_Master implements ValidatorInterface {
                                 lsCompnyNm = loRS.getString("sCompnyNm");
                                 lsClientID = loRS.getString("sClientID");
                             }
-                            psMessage = "Existing Customer LTO ID Record.\n\nClient ID: "+ lsClientID + "\nName: " + lsCompnyNm.toUpperCase() + ".";
+                            psMessage = "Existing LTO ID Record.\n\nID: "+ lsClientID + "\nName: " + lsCompnyNm.toUpperCase() + ".";
                             MiscUtil.close(loRS);
                             return false;
                     }
