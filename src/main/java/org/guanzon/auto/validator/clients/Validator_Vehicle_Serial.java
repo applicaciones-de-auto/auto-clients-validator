@@ -190,11 +190,24 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
                            + "  sDescript "
                            + " , sValuexxx "
                            + " FROM xxxstandard_sets ";
+            lsSQL = MiscUtil.addCondition(lsSQL, " sDescript = 'affiliated_make' ");
+            System.out.println("AFFILIATED MAKE CHECK: " + lsSQL);
+            ResultSet loRS = poGRider.executeQuery(lsSQL);
+
+            if (MiscUtil.RecordCount(loRS) == 0){
+                psMessage = "Please notify System Administrator to config `affiliated_make`.";
+                return false;
+            }
+            
+            lsSQL =   " SELECT "
+                           + "  sDescript "
+                           + " , sValuexxx "
+                           + " FROM xxxstandard_sets ";
             lsSQL = MiscUtil.addCondition(lsSQL, " sDescript = 'affiliated_make' "
                                                     + " AND sValuexxx = " + SQLUtil.toSQL(poEntity.getMakeDesc()) 
                                                     );
             System.out.println("AFFILIATED MAKE CHECK: " + lsSQL);
-            ResultSet loRS = poGRider.executeQuery(lsSQL);
+            loRS = poGRider.executeQuery(lsSQL);
 
             if (MiscUtil.RecordCount(loRS) > 0){
                 //Check body type do not validate engine and frame when body type is Motorcycle or Truck
