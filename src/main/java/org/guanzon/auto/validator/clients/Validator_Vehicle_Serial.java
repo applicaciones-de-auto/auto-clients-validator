@@ -190,23 +190,23 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
                            + "  sDescript "
                            + " , sValuexxx "
                            + " FROM xxxstandard_sets ";
-            lsSQL = MiscUtil.addCondition(lsSQL, " sDescript = 'affiliated_make' ");
+            lsSQL = MiscUtil.addCondition(lsSQL, " (sDescript = 'affiliated_make' OR sDescript = 'mainproduct') ");
             System.out.println("AFFILIATED MAKE CHECK: " + lsSQL);
             ResultSet loRS = poGRider.executeQuery(lsSQL);
 
             if (MiscUtil.RecordCount(loRS) == 0){
-                psMessage = "Please notify System Administrator to config `affiliated_make`.";
+                psMessage = "Please notify System Administrator to config `affiliated_make` or `mainproduct`.";
                 return false;
             }
             
             lsSQL =   " SELECT "
-                           + "  sDescript "
-                           + " , sValuexxx "
-                           + " FROM xxxstandard_sets ";
-            lsSQL = MiscUtil.addCondition(lsSQL, " sDescript = 'affiliated_make' "
+                    + "  sDescript "
+                    + " , sValuexxx "
+                    + " FROM xxxstandard_sets ";
+            lsSQL = MiscUtil.addCondition(lsSQL, " (sDescript = 'affiliated_make' OR sDescript = 'mainproduct') "
                                                     + " AND sValuexxx = " + SQLUtil.toSQL(poEntity.getMakeDesc()) 
                                                     );
-            System.out.println("AFFILIATED MAKE CHECK: " + lsSQL);
+            System.out.println("AFFILIATED MAKE AND MAIN PRODUCT CHECK: " + lsSQL);
             loRS = poGRider.executeQuery(lsSQL);
 
             if (MiscUtil.RecordCount(loRS) > 0){
