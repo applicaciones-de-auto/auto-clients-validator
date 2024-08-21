@@ -60,6 +60,36 @@ public class Validator_Sales_Agent implements ValidatorInterface {
                     return false;
                 }
             }
+
+            if(poEntity.getProfessn() == null) {
+                psMessage = "Agent Profession is not set.";
+                return false;
+            } else {
+                if (poEntity.getProfessn().isEmpty()){
+                    psMessage = "Agent Profession is not set.";
+                    return false;
+                }
+            }
+
+            if(poEntity.getCompany() == null) {
+                psMessage = "Agent Company is not set.";
+                return false;
+            } else {
+                if (poEntity.getCompany().isEmpty()){
+                    psMessage = "Agent Company is not set.";
+                    return false;
+                }
+            }
+
+            if(poEntity.getPosition() == null) {
+                psMessage = "Agent Position is not set.";
+                return false;
+            } else {
+                if (poEntity.getPosition().isEmpty()){
+                    psMessage = "Agent Position is not set.";
+                    return false;
+                }
+            }
             
             if(poEntity.getEditMode() == EditMode.ADDNEW){
                 lsSQL = poEntity.getSQL();
