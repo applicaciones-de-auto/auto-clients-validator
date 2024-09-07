@@ -318,55 +318,62 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
             
             String lsID = "";
             String lsDesc  = "";
-            lsSQL =    "  SELECT "                 
-                        + "  sSerialID "             
-                        + ", sCSNoxxxx "           
-                        + " FROM vehicle_serial " ;  
+            if(poEntity.getCSNo() != null){
+                if(!poEntity.getCSNo().trim().isEmpty()){
+                    lsSQL =    "  SELECT "                 
+                                + "  sSerialID "             
+                                + ", sCSNoxxxx "           
+                                + " FROM vehicle_serial " ;  
 
-            lsSQL = MiscUtil.addCondition(lsSQL, " sCSNoxxxx = " + SQLUtil.toSQL(poEntity.getCSNo()) 
-                                                    + " AND sSerialID <> " + SQLUtil.toSQL(poEntity.getSerialID()) 
-                                                    );
-            System.out.println("EXISTING VEHICLE SERIAL CS NO CHECK: " + lsSQL);
-            loRS = poGRider.executeQuery(lsSQL);
+                    lsSQL = MiscUtil.addCondition(lsSQL, " sCSNoxxxx = " + SQLUtil.toSQL(poEntity.getCSNo()) 
+                                                            + " AND sSerialID <> " + SQLUtil.toSQL(poEntity.getSerialID()) 
+                                                            );
+                    System.out.println("EXISTING VEHICLE SERIAL CS NO CHECK: " + lsSQL);
+                    loRS = poGRider.executeQuery(lsSQL);
 
-            if (MiscUtil.RecordCount(loRS) > 0){
-                    while(loRS.next()){
-                        lsID = loRS.getString("sSerialID");
-                        lsDesc = loRS.getString("sCSNoxxxx");
+                    if (MiscUtil.RecordCount(loRS) > 0){
+                            while(loRS.next()){
+                                lsID = loRS.getString("sSerialID");
+                                lsDesc = loRS.getString("sCSNoxxxx");
+                            }
+
+                            MiscUtil.close(loRS);
+
+                            psMessage = "Existing Vehicle Serial CS No Record.\n\nSerial ID: " + lsID + "\nCS No: " + lsDesc.toUpperCase() ;
+                            return false;
                     }
-                    
-                    MiscUtil.close(loRS);
-                    
-                    psMessage = "Existing Vehicle Serial CS No Record.\n\nSerial ID: " + lsID + "\nCS No: " + lsDesc.toUpperCase() ;
-                    return false;
+                }
             }
             
             lsID = "";
             lsDesc  = "";
-            lsSQL =   " SELECT "                                                               
-                    + "   a.sSerialID "                                                         
-                    + " , b.sPlateNox "                                                          
-                    + " FROM vehicle_serial a "                                                
-                    + " LEFT JOIN vehicle_serial_registration b ON b.sSerialID = a.sSerialID " ;
+            if(poEntity.getPlateNo() != null){
+                if(!poEntity.getPlateNo().trim().isEmpty()){
+                    lsSQL =   " SELECT "                                                               
+                            + "   a.sSerialID "                                                         
+                            + " , b.sPlateNox "                                                          
+                            + " FROM vehicle_serial a "                                                
+                            + " LEFT JOIN vehicle_serial_registration b ON b.sSerialID = a.sSerialID " ;
 
-            lsSQL = MiscUtil.addCondition(lsSQL, " b.sPlateNox = " + SQLUtil.toSQL(poEntity.getPlateNo()) 
-                                                    + " AND a.sSerialID <> " + SQLUtil.toSQL(poEntity.getSerialID()) 
-                                                    );
-            System.out.println("EXISTING VEHICLE SERIAL PLATE NO CHECK: " + lsSQL);
-            loRS = poGRider.executeQuery(lsSQL);
+                    lsSQL = MiscUtil.addCondition(lsSQL, " b.sPlateNox = " + SQLUtil.toSQL(poEntity.getPlateNo()) 
+                                                            + " AND a.sSerialID <> " + SQLUtil.toSQL(poEntity.getSerialID()) 
+                                                            );
+                    System.out.println("EXISTING VEHICLE SERIAL PLATE NO CHECK: " + lsSQL);
+                    loRS = poGRider.executeQuery(lsSQL);
 
-            if (MiscUtil.RecordCount(loRS) > 0){
-                    while(loRS.next()){
-                        lsID = loRS.getString("sSerialID");
-                        lsDesc = loRS.getString("sPlateNox");
+                    if (MiscUtil.RecordCount(loRS) > 0){
+                            while(loRS.next()){
+                                lsID = loRS.getString("sSerialID");
+                                lsDesc = loRS.getString("sPlateNox");
+                            }
+
+                            MiscUtil.close(loRS);
+
+                            psMessage = "Existing Vehicle Serial Plate No Record.\n\nSerial ID: " + lsID + "\nPlate No: " + lsDesc.toUpperCase()   ;
+                            return false;
                     }
-                    
-                    MiscUtil.close(loRS);
-                    
-                    psMessage = "Existing Vehicle Serial Plate No Record.\n\nSerial ID: " + lsID + "\nPlate No: " + lsDesc.toUpperCase()   ;
-                    return false;
+                }
             }
-            
             lsID = "";
             lsDesc  = "";
             lsSQL =    "  SELECT "                 
