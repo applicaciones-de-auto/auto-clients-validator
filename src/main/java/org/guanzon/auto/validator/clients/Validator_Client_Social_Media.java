@@ -46,15 +46,15 @@ public class Validator_Client_Social_Media implements ValidatorInterface {
             }
         }
         
-        if(poEntity.getClientID() == null){
-            psMessage = "Client ID cannot be Empty.";
-            return false;
-        } else {
-            if(poEntity.getClientID().trim().isEmpty()){
-                psMessage = "Client ID cannot be Empty.";
-                return false;
-            }
-        }
+//        if(poEntity.getClientID() == null){
+//            psMessage = "Client ID cannot be Empty.";
+//            return false;
+//        } else {
+//            if(poEntity.getClientID().trim().isEmpty()){
+//                psMessage = "Client ID cannot be Empty.";
+//                return false;
+//            }
+//        }
         
         if(poEntity.getAccount() == null){
             psMessage = "Social account cannot be Empty.";
@@ -76,11 +76,13 @@ public class Validator_Client_Social_Media implements ValidatorInterface {
                             ", a.cClientTp " +
                             ", b.sSocialID " +
                             ", b.sAccountx " +
+                            ", b.cSocialTp " +
                             "FROM client_master a " +
                             "LEFT JOIN client_social_media b ON b.sClientID = a.sClientID " ;
 
-            lsSQL = MiscUtil.addCondition(lsSQL, "b.sAccountx = " + SQLUtil.toSQL(poEntity.getAccount())) +
-                                                        " AND b.sSocialID <> " + SQLUtil.toSQL(poEntity.getSocialID()) ;
+            lsSQL = MiscUtil.addCondition(lsSQL, " b.sAccountx = " + SQLUtil.toSQL(poEntity.getAccount())) +
+                                                    " AND b.cSocialTp = " + SQLUtil.toSQL(poEntity.getSocialTp()) +
+                                                    " AND b.sSocialID <> " + SQLUtil.toSQL(poEntity.getSocialID()) ;
 
             System.out.println("EXISTING SOCIAL MEDIA ACCOUNT CHECK: " + lsSQL);
             ResultSet loRS = poGRider.executeQuery(lsSQL);
@@ -91,7 +93,7 @@ public class Validator_Client_Social_Media implements ValidatorInterface {
                     }
 
                     MiscUtil.close(loRS);
-                    psMessage = "Existing Social Media Account with Customer Record.\n\nClient ID: " + lsClientID + "\nName: " + lsCompnyNm.toUpperCase();
+                    psMessage = "Existing Social Media Account: "+poEntity.getAccount()+" with Customer Record.\n\nClient ID: " + lsClientID + "\nName: " + lsCompnyNm.toUpperCase();
                     return false;
             }
         } catch (SQLException ex) {
