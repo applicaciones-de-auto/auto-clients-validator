@@ -6,6 +6,7 @@ org\guanzon\auto\validator\clients\ValidatorFactory$TYPE.class
 org\guanzon\auto\validator\clients\ValidatorFactory.class
 org\guanzon\auto\validator\clients\ValidatorFactory$1.class
 org\guanzon\auto\validator\clients\ValidatorInterface.class
+org\guanzon\auto\validator\clients\Validator_Service_Mechanic.class
 org\guanzon\auto\validator\clients\Validator_Client_Mobile.class
 org\guanzon\auto\validator\clients\Validator_Vehicle_Registration.class
 org\guanzon\auto\validator\clients\Validator_Addresses.class
