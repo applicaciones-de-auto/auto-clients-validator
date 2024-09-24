@@ -5,9 +5,11 @@ D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanz
 D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\Validator_Client_Email.java
 D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\Validator_Client_Mobile.java
 D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\Validator_Client_Social_Media.java
+D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\Validator_Service_Advisor.java
 D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\Validator_Service_Mechanic.java
 D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\Validator_Vehicle_Serial.java
 D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\ValidatorFactory.java
 D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\Validator_Addresses.java
+D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\Validator_Vehicle_Gatepass.java
 D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\ValidatorInterface.java
 D:\Guanzon\GMC SEG Folder - Maven\auto-clients-validator\src\main\java\org\guanzon\auto\validator\clients\Validator_Sales_Agent.java
