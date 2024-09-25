@@ -21,7 +21,10 @@ public class ValidatorFactory {
         Vehicle_Serial,
         Vehicle_Registration,
         Sales_Executive,
-        Sales_Agent
+        Sales_Agent,
+        Service_Mechanic,
+        Service_Advisor,
+        Vehicle_Gatepass
     }
     
     public static ValidatorInterface make(ValidatorFactory.TYPE foType, Object foValue){
@@ -46,6 +49,10 @@ public class ValidatorFactory {
                 return new Validator_Vehicle_Serial(foValue);
             case Vehicle_Registration:
                 return new Validator_Vehicle_Registration(foValue);
+            case Service_Mechanic:
+                return new Validator_Service_Mechanic(foValue);
+            case Vehicle_Gatepass:
+                return new Validator_Vehicle_Gatepass(foValue);
             default:
                 return null;
         }
