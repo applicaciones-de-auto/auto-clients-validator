@@ -10,8 +10,8 @@ package org.guanzon.auto.validator.clients;
  * @author Arsiela
  */
 public class ValidatorFactory {
-    
-    public enum TYPE{
+
+    public enum TYPE {
         Client_Master,
         Client_Address,
         Client_Mobile,
@@ -26,8 +26,8 @@ public class ValidatorFactory {
         Service_Advisor,
         Vehicle_Gatepass
     }
-    
-    public static ValidatorInterface make(ValidatorFactory.TYPE foType, Object foValue){
+
+    public static ValidatorInterface make(ValidatorFactory.TYPE foType, Object foValue) {
         switch (foType) {
             case Client_Master:
                 return new Validator_Client_Master(foValue);
@@ -51,6 +51,8 @@ public class ValidatorFactory {
                 return new Validator_Vehicle_Registration(foValue);
             case Service_Mechanic:
                 return new Validator_Service_Mechanic(foValue);
+            case Service_Advisor:
+                return new Validator_Service_Advisor(foValue);
             case Vehicle_Gatepass:
                 return new Validator_Vehicle_Gatepass(foValue);
             default:
