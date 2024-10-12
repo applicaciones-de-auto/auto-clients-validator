@@ -5,9 +5,14 @@
  */
 package org.guanzon.auto.validator.clients;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.MiscUtil;
+import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.model.clients.Model_Vehicle_Gatepass;
 
 /**
@@ -66,6 +71,29 @@ public class Validator_Vehicle_Gatepass implements ValidatorInterface {
                 psMessage = "Source Group is not set.";
                 return false;
             }
+        }
+        
+        try {
+            String lsID = "";
+            String lsSQL =  poEntity.makeSelectSQL();
+            lsSQL = MiscUtil.addCondition(lsSQL, " sSourceCD = " + SQLUtil.toSQL(poEntity.getSourceCD()) 
+                                                    + " AND sTransNox <> " + SQLUtil.toSQL(poEntity.getTransNo()) 
+                                                    + " AND cTranStat <> " + SQLUtil.toSQL(TransactionStatus.STATE_CANCELLED)
+                                                    );
+            System.out.println("EXISTING VEHICLE GATEPASS CHECK: " + lsSQL);
+            ResultSet loRS = poGRider.executeQuery(lsSQL);
+
+            if (MiscUtil.RecordCount(loRS) > 0){
+                while(loRS.next()){
+                    lsID = loRS.getString("sTransNox");
+                }
+
+                MiscUtil.close(loRS);
+                psMessage = "Found exisiting Vehicle Gatepass No."+lsID+".\n\nSaving aborted.";
+                return false;
+            } 
+        } catch (SQLException ex) {
+            Logger.getLogger(Validator_Vehicle_Gatepass.class.getName()).log(Level.SEVERE, null, ex);
         }
         return true;
     }
