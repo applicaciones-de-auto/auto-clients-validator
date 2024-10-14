@@ -48,33 +48,42 @@ public class Validator_Vehicle_Gatepass_Released_Items implements ValidatorInter
             }
         }
         
-        switch(poEntity.getItemType()){
-            case "l":
-                if(poEntity.getLaborCde()== null) {
-                    psMessage = "Labor is not set."; 
-                    return false;
-                } else {
-                    if (poEntity.getLaborCde().isEmpty()){
-                        psMessage = "Labor is not set.";
-                        return false;
-                    }
-                }
-            break;
-            case "p":
-                if(poEntity.getStockID()== null) {
-                    psMessage = "Stock is not set.";
-                    return false;
-                } else {
-                    if (poEntity.getStockID().isEmpty()){
-                        psMessage = "Stock is not set.";
-                        return false;
-                    }
-                }
-            break;
-            case "d":
-            break;
-        
+        if(poEntity.getItemCode()== null) {
+            psMessage = "Item Code is not set."; 
+            return false;
+        } else {
+            if (poEntity.getItemCode().isEmpty()){
+                psMessage = "Item Code is not set.";
+                return false;
+            }
         }
+//        switch(poEntity.getItemType()){
+//            case "l":
+//                if(poEntity.getLaborCde()== null) {
+//                    psMessage = "Labor is not set."; 
+//                    return false;
+//                } else {
+//                    if (poEntity.getLaborCde().isEmpty()){
+//                        psMessage = "Labor is not set.";
+//                        return false;
+//                    }
+//                }
+//            break;
+//            case "p":
+//                if(poEntity.getStockID()== null) {
+//                    psMessage = "Stock is not set.";
+//                    return false;
+//                } else {
+//                    if (poEntity.getStockID().isEmpty()){
+//                        psMessage = "Stock is not set.";
+//                        return false;
+//                    }
+//                }
+//            break;
+//            case "d":
+//            break;
+//        
+//        }
         return true;
     }
 
