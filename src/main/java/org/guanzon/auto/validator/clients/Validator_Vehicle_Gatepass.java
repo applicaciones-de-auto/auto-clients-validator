@@ -91,7 +91,7 @@ public class Validator_Vehicle_Gatepass implements ValidatorInterface {
                 MiscUtil.close(loRS);
                 psMessage = "Found exisiting Vehicle Gatepass No."+lsID+".\n\nSaving aborted.";
                 return false;
-            } 
+            }
         } catch (SQLException ex) {
             Logger.getLogger(Validator_Vehicle_Gatepass.class.getName()).log(Level.SEVERE, null, ex);
         }

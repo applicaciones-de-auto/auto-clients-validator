@@ -15,3 +15,4 @@ org\guanzon\auto\validator\clients\Validator_Addresses.class
 org\guanzon\auto\validator\clients\Validator_Sales_Agent.class
 org\guanzon\auto\validator\clients\Validator_Client_Master.class
 org\guanzon\auto\validator\clients\Validator_Client_Social_Media.class
+org\guanzon\auto\validator\clients\Validator_Vehicle_Gatepass_Released_Items.class

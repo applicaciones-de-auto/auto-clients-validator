@@ -152,6 +152,11 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
             }
         }
         
+        if(poEntity.getEngineNo().equals(poEntity.getFrameNo())){
+            psMessage = "Engine No and Frame No cannot be the same.";
+            return false;
+        }
+        
         if(poEntity.getSoldStat()== null){
             psMessage = "Vehicle Status cannot be Empty.";
             return false;
@@ -159,6 +164,18 @@ public class Validator_Vehicle_Serial implements ValidatorInterface {
             if(poEntity.getSoldStat().trim().isEmpty()){
                 psMessage = "Vehicle Status cannot be Empty.";
                 return false;
+            }
+        }
+        
+        if(!poEntity.getSoldStat().equals("0")){
+            if(poEntity.getVhclNew()== null){
+                psMessage = "Vehicle Category cannot be Empty.";
+                return false;
+            } else {
+                if(poEntity.getVhclNew().trim().isEmpty()){
+                    psMessage = "Vehicle Category cannot be Empty.";
+                    return false;
+                }
             }
         }
         
