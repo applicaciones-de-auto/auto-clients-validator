@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.model.clients.Model_Vehicle_Gatepass;
 import org.guanzon.auto.model.service.Model_JobOrder_Master;
@@ -94,23 +95,25 @@ public class Validator_Vehicle_Gatepass implements ValidatorInterface {
                 return false;
             }
             
-            lsID = "";
-            Model_JobOrder_Master loEntity = new Model_JobOrder_Master(poGRider);
-            lsSQL =  loEntity.makeSelectSQL();
-            lsSQL = MiscUtil.addCondition(lsSQL, " sSourceNo = " + SQLUtil.toSQL(poEntity.getSourceCD()) 
-                                                    + " AND cTranStat = " + SQLUtil.toSQL(TransactionStatus.STATE_OPEN)
-                                                    );
-            System.out.println("PENDING JOB ORDER CHECK: " + lsSQL);
-            loRS = poGRider.executeQuery(lsSQL);
+            if(!poEntity.getTranStat().equals(TransactionStatus.STATE_CANCELLED) && poEntity.getEditMode() == EditMode.ADDNEW){
+                lsID = "";
+                Model_JobOrder_Master loEntity = new Model_JobOrder_Master(poGRider);
+                lsSQL =  loEntity.makeSelectSQL();
+                lsSQL = MiscUtil.addCondition(lsSQL, " sSourceNo = " + SQLUtil.toSQL(poEntity.getSourceCD()) 
+                                                        + " AND cTranStat = " + SQLUtil.toSQL(TransactionStatus.STATE_OPEN)
+                                                        );
+                System.out.println("PENDING JOB ORDER CHECK: " + lsSQL);
+                loRS = poGRider.executeQuery(lsSQL);
 
-            if (MiscUtil.RecordCount(loRS) > 0){
-                while(loRS.next()){
-                    lsID = loRS.getString("sTransNox");
+                if (MiscUtil.RecordCount(loRS) > 0){
+                    while(loRS.next()){
+                        lsID = loRS.getString("sTransNox");
+                    }
+
+                    MiscUtil.close(loRS);
+                    psMessage = "Found un-done Job Order with JO No."+lsID+".\n\nSaving aborted.";
+                    return false;
                 }
-
-                MiscUtil.close(loRS);
-                psMessage = "Found un-done Job Order with JO No."+lsID+".\n\nSaving aborted.";
-                return false;
             }
             
         } catch (SQLException ex) {
